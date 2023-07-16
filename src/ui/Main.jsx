@@ -1,8 +1,18 @@
-import { styled } from 'styled-components';
+import { colors, Box } from '@mui/material';
 
-const Main = styled.main`
-  background-color: var(--color-grey-50);
-  padding: 4rem 4.8rem 6.4rem;
-`;
+function Main({ children }) {
+  return (
+    <Box
+      component='main'
+      px='4.8rem'
+      pt='4rem'
+      pb='6.4rem'
+      bgcolor={colors.grey[50]}
+      flexGrow={1}
+    >
+      {children}
+    </Box>
+  );
+}
 
 export default Main;

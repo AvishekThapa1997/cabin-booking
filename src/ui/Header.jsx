@@ -1,11 +1,15 @@
-import { styled } from 'styled-components';
-
-const StyledHeader = styled.header`
-  background-color: var(--color-grey-0);
-  padding: 1.2rem 4.8rem;
-  border-bottom: 1px solid var(--color-grey-100);
-`;
+import { colors, Box } from '@mui/material';
 
 export default function Header() {
-  return <StyledHeader>header</StyledHeader>;
+  return (
+    <Box
+      component='header'
+      bgcolor={colors.grey[100]}
+      py='1.2rem'
+      px='4.8rem'
+      borderBottom={`1px solid ${colors.grey[200]}`}
+    >
+      header
+    </Box>
+  );
 }

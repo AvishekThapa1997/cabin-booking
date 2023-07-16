@@ -12,7 +12,8 @@ import Account from './pages/Account';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
 import AppLayout from './ui/AppLayout';
-import GlobalStyle from './styles/GlobalStyle';
+import './styles/index.css';
+
 const routes = createBrowserRouter([
   {
     path: '/',
@@ -66,7 +67,6 @@ const routes = createBrowserRouter([
 function App() {
   return (
     <>
-      <GlobalStyle />
       <RouterProvider router={routes} />
     </>
   );
