@@ -4,7 +4,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import Main from './Main';
 import { styled } from 'styled-components';
-import supabase from '../lib/supabase';
+import Container from './Container';
 
 const StyledAppLayout = styled.div`
   display: grid;
@@ -14,13 +14,14 @@ const StyledAppLayout = styled.div`
 `;
 
 export default function AppLayout() {
-  console.log(supabase);
   return (
     <StyledAppLayout>
       <Header />
       <Sidebar />
       <Main>
-        <Outlet />
+        <Container>
+          <Outlet />
+        </Container>
       </Main>
     </StyledAppLayout>
   );

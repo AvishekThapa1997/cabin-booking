@@ -9,6 +9,8 @@ const Table = styled.div`
   background-color: var(--color-grey-0);
   border-radius: 7px;
   overflow: hidden;
+  margin-top: 3.2rem;
+  flex: 1;
 `;
 
 const TableHeader = styled.header`
@@ -26,10 +28,11 @@ const TableHeader = styled.header`
 `;
 
 function CabinTable() {
-  const { data: cabins, error, isFetching } = useCabins();
-  if (isFetching) {
+  const { data: cabins = [], error, isFetching } = useCabins();
+  if (isFetching && cabins.length === 0) {
     return <Spinner />;
   }
+
   return (
     <Table role='table'>
       <TableHeader>
