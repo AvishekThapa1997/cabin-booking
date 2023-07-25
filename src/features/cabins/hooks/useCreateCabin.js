@@ -1,12 +1,17 @@
 import { useMutation } from '@tanstack/react-query';
 import { createCabin } from '../../../services/apiCabins';
+import useCabinsInvalidationQueries from './useCabinsInvalidationQueries';
 
-function useCreateCabin({ onSuccess, onError }) {
+function useCreateCabin({ onSuccessHandler, onErrorHandler }) {
+  const { invalidate } = useCabinsInvalidationQueries();
   return useMutation({
     mutationKey: ['createCabin'],
     mutationFn: createCabin,
-    ...(onSuccess ? { onSuccess } : {}),
-    ...(onError ? { onError } : {}),
+    onSuccess: (data) => {
+      invalidate();
+      onSuccessHandler?.(data);
+    },
+    ...(onErrorHandler ? { onError: onErrorHandler } : {}),
   });
 }
 

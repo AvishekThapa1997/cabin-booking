@@ -6,45 +6,79 @@ import Textarea from '../../../ui/Textarea';
 import { useForm } from 'react-hook-form';
 import useCreateCabin from '../hooks/useCreateCabin';
 import useToast from '../../../hooks/useToast';
-import useReactQueryClient from '../../../hooks/useReactQueryClient';
 import FormRow from '../../../ui/FormRow';
+import useEditCabin from '../hooks/useEditCabin';
 
-function CabinForm() {
+function CabinForm({
+  id,
+  name,
+  regularPrice,
+  discount,
+  description,
+  maxCapacity,
+  image,
+}) {
+  const isFormInEditMode = Boolean(id);
   const {
     register,
     reset,
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm();
-  const queryClient = useReactQueryClient();
+  } = useForm({
+    defaultValues: isFormInEditMode
+      ? {
+          name,
+          regularPrice,
+          discount,
+          maxCapacity,
+          description,
+          image,
+        }
+      : {},
+  });
   const toast = useToast();
-  const addCabinSuccessHandler = () => {
-    //toast.success('Cabin is created successfully.');
-    reset();
-    queryClient.invalidateQueries({
-      queryKey: ['cabins'],
-    });
+  const mutateCabinSuccessHandler = (data) => {
+    if (isEditing) {
+      reset({
+        ...data,
+      });
+    } else {
+      reset();
+    }
   };
 
   const { mutateAsync: createCabin, isLoading: isCreating } = useCreateCabin({
-    onSuccess: addCabinSuccessHandler,
+    onSuccessHandler: mutateCabinSuccessHandler,
   });
+  const { mutateAsync: editCabin, isLoading: isEditing } = useEditCabin({
+    onSuccessHandler: mutateCabinSuccessHandler,
+  });
+  const disabledElement = isCreating || isEditing;
   function submitHandler(formData) {
-    const {
-      image: [cabinImage],
-      ...remainingFormData
-    } = formData;
+    const { image: cabinImage, ...remainingFormData } = formData;
+    const updatedImage =
+      cabinImage instanceof FileList ? cabinImage[0] : cabinImage;
+    const isPreviousImageAvailable = image !== null && image !== cabinImage;
     const cabinData = {
-      image: cabinImage,
+      image: updatedImage,
       ...remainingFormData,
+      ...(isFormInEditMode && isPreviousImageAvailable
+        ? { previousImage: image }
+        : {}),
     };
-    createCabin(cabinData);
-    toast.promise(createCabin(cabinData), {
-      loading: 'Please wait...',
-      success: 'Cabin is created successfully.',
-      error: (error) => error.message,
-    });
+    toast.promise(
+      isFormInEditMode
+        ? editCabin({ cabinId: id, cabinDataToUpdate: cabinData })
+        : createCabin(cabinData),
+      {
+        loading: 'Please wait...',
+        success: isCreating
+          ? 'Cabin is created successfully.'
+          : 'Cabin updated successfully.',
+        error: (error) => error.message,
+      },
+    );
   }
   return (
     <Form onSubmit={handleSubmit(submitHandler)}>
@@ -58,7 +92,7 @@ function CabinForm() {
           {...register('name', {
             required: 'Please enter name.',
           })}
-          disabled={isCreating}
+          disabled={disabledElement}
         />
       </FormRow>
 
@@ -77,7 +111,7 @@ function CabinForm() {
             },
           })}
           defaultValue={1}
-          disabled={isCreating}
+          disabled={disabledElement}
         />
       </FormRow>
 
@@ -96,7 +130,7 @@ function CabinForm() {
             },
           })}
           defaultValue={1}
-          disabled={isCreating}
+          disabled={disabledElement}
         />
       </FormRow>
 
@@ -116,7 +150,7 @@ function CabinForm() {
             },
           })}
           defaultValue={0}
-          disabled={isCreating}
+          disabled={disabledElement}
         />
       </FormRow>
 
@@ -136,7 +170,7 @@ function CabinForm() {
               );
             },
           })}
-          disabled={isCreating}
+          disabled={disabledElement}
         />
       </FormRow>
 
@@ -148,9 +182,11 @@ function CabinForm() {
           id='image'
           accept='image/*'
           {...register('image', {
-            required: 'Please upload image for cabin.',
+            required: isFormInEditMode
+              ? false
+              : 'Please upload image for cabin.',
           })}
-          disabled={isCreating}
+          disabled={disabledElement}
           placeholder='Image'
         />
       </FormRow>
@@ -162,7 +198,9 @@ function CabinForm() {
         >
           Cancel
         </Button>
-        <Button disabled={isCreating}>Edit cabin</Button>
+        <Button disabled={disabledElement}>
+          {isFormInEditMode ? 'Edit cabin' : 'Add cabin'}
+        </Button>
       </FormRow>
     </Form>
   );

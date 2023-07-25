@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useCabins } from '../hooks/useCabins';
 import Spinner from '../../../ui/Spinner';
 import CabinRow from './CabinRow';
+import Message from '../../../ui/Message';
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -34,22 +35,37 @@ function CabinTable() {
   }
 
   return (
-    <Table role='table'>
-      <TableHeader>
-        <div></div>
-        <div>Cabin</div>
-        <div>Capacity</div>
-        <div>Price</div>
-        <div>Discount</div>
-        <div></div>
-      </TableHeader>
-      {cabins.map((cabin) => (
-        <CabinRow
-          {...cabin}
-          key={cabin.id}
-        />
-      ))}
-    </Table>
+    <>
+      {error ? (
+        <Message
+          type='error'
+          centerText
+        >
+          {error.message}
+        </Message>
+      ) : null}
+      {cabins && cabins.length === 0 ? (
+        <Message centerText>no cabins to show!</Message>
+      ) : null}
+      {cabins && cabins.length > 0 ? (
+        <Table role='table'>
+          <TableHeader>
+            <div></div>
+            <div>Cabin</div>
+            <div>Capacity</div>
+            <div>Price</div>
+            <div>Discount</div>
+            <div></div>
+          </TableHeader>
+          {cabins.map((cabin) => (
+            <CabinRow
+              {...cabin}
+              key={cabin.id}
+            />
+          ))}
+        </Table>
+      ) : null}
+    </>
   );
 }
 

@@ -28,3 +28,16 @@ export const formatCurrency = (value) =>
   new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' }).format(
     value,
   );
+
+export const generateCabinImageUrlPath = (path) =>
+  `${
+    import.meta.env.VITE_SUPABASE_URL
+  }/storage/v1/object/public/cabins/${path}`;
+
+export const extractCabinImagePathFromUrl = (imageUrl) => {
+  return imageUrl?.trim()
+    ? imageUrl.substring(imageUrl.lastIndexOf('/') + 1)
+    : null;
+};
+
+export const generateCabinImageStoragePath = (name) => `${Date.now()}-${name}`;

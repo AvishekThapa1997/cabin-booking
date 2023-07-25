@@ -1,7 +1,6 @@
 import supabase from '../lib/supabase';
 
 export async function uploadFile({ file, path = '/' }) {
-  console.log(path);
   const { data, error } = await supabase.storage
     .from('cabins')
     .upload(path, file, {
@@ -9,8 +8,14 @@ export async function uploadFile({ file, path = '/' }) {
       upsert: false,
     });
   if (error) {
-    console.log(error);
-    throw error;
+    throw new Error('Unable to proceed.Please try again later.');
   }
   return { data, error };
+}
+
+export async function deleteFile(...filePaths) {
+  const { error } = await supabase.storage.from('cabins').remove(filePaths);
+  if (error) {
+    throw error;
+  }
 }
