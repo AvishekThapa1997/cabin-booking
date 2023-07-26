@@ -1,11 +1,9 @@
 import { NavLink } from 'react-router-dom';
-import {
-  HiOutlineHome,
-  HiOutlineCalendar,
-  HiOutlineHomeModern,
-  HiOutlineUsers,
-  HiOutlineCog6Tooth,
-} from 'react-icons/hi2';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
+import CottageOutlinedIcon from '@mui/icons-material/CottageOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { colors, styled } from '@mui/material';
 
 const NavList = styled('ul')({
@@ -48,31 +46,31 @@ export default function MainNav() {
       <NavList>
         <li>
           <StyledNavLink to='/dashboard'>
-            <HiOutlineHome />
+            <HomeOutlinedIcon />
             <span>home</span>
           </StyledNavLink>
         </li>
         <li>
           <StyledNavLink to='/bookings'>
-            <HiOutlineCalendar />
+            <CalendarTodayOutlinedIcon />
             <span>bookings</span>
           </StyledNavLink>
         </li>
         <li>
           <StyledNavLink to='/cabins'>
-            <HiOutlineHomeModern />
+            <CottageOutlinedIcon />
             <span>Cabins</span>
           </StyledNavLink>
         </li>
         <li>
           <StyledNavLink to='/users'>
-            <HiOutlineUsers />
+            <GroupOutlinedIcon />
             <span>Users</span>
           </StyledNavLink>
         </li>
         <li>
           <StyledNavLink to='/settings'>
-            <HiOutlineCog6Tooth />
+            <SettingsOutlinedIcon />
             <span>settings</span>
           </StyledNavLink>
         </li>
