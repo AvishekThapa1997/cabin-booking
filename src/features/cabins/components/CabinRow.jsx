@@ -4,6 +4,8 @@ import useDeleteCabin from '../hooks/useDeleteCabin';
 import useToast from '../../../hooks/useToast';
 import { useState } from 'react';
 import CabinForm from './CabinForm';
+import { HiSquare2Stack, HiPencil, HiTrash } from 'react-icons/hi2';
+import useCreateCabin from '../hooks/useCreateCabin';
 
 const TableRow = styled.div`
   display: grid;
@@ -56,6 +58,23 @@ export default function CabinRow({
   const [cabinIdToEdit, setCabinIdToEdit] = useState(null);
   const toast = useToast();
   const { mutateAsync: deleteCabin, isLoading: isDeleting } = useDeleteCabin();
+  const { mutateAsync: createCabin, isLoading: isCreating } = useCreateCabin();
+  const disabledButton = isDeleting || isCreating;
+  const copyCabinHandler = () => {
+    const cabinDataToCopy = {
+      name,
+      regularPrice,
+      discount,
+      description,
+      maxCapacity,
+      image,
+    };
+    toast.promise(createCabin(cabinDataToCopy), {
+      loading: 'Please wait...',
+      success: 'Cabin is duplicated successfully.',
+      error: (error) => error.message,
+    });
+  };
   return (
     <>
       <TableRow role='row'>
@@ -69,14 +88,22 @@ export default function CabinRow({
         <Discount>{formatCurrency(discount)}</Discount>
         <div>
           <button
+            onClick={copyCabinHandler}
+            disabled={disabledButton}
+          >
+            <HiSquare2Stack />
+          </button>
+          <button
+            disabled={disabledButton}
             onClick={() => {
               setCabinIdToEdit(id);
             }}
           >
-            Edit
+            <HiPencil />
           </button>
+          <button></button>
           <button
-            disabled={isDeleting}
+            disabled={disabledButton}
             onClick={() => {
               toast.promise(deleteCabin(id), {
                 loading: <span>Please wait...</span>,
@@ -85,7 +112,7 @@ export default function CabinRow({
               });
             }}
           >
-            Delete
+            <HiTrash />
           </button>
         </div>
       </TableRow>

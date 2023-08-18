@@ -40,14 +40,19 @@ async function deleteCabin(cabinId) {
 }
 
 async function createCabin(cabinData) {
-  const { data, error: imageUploadError } = await uploadFile({
-    file: cabinData.image,
-    path: generateCabinImageStoragePath(cabinData.image.name),
-  });
-  if (imageUploadError) {
-    throw new Error('Unable to proceed.Please try again.');
+  let imagePath = '';
+  if (cabinData.image && cabinData.image instanceof File) {
+    const { data, error: imageUploadError } = await uploadFile({
+      file: cabinData.image,
+      path: generateCabinImageStoragePath(cabinData.image.name),
+    });
+    if (imageUploadError) {
+      throw new Error('Unable to proceed.Please try again.');
+    }
+    imagePath = data?.path ? generateCabinImageUrlPath(data.path) : null;
+  } else {
+    imagePath = cabinData.image ?? null;
   }
-  const imagePath = data?.path ? generateCabinImageUrlPath(data.path) : null;
   const { error } = await supabase
     .from('cabins')
     .insert([{ ...cabinData, image: imagePath }]);
